@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { z, infer as zInfer } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth.client";
@@ -128,20 +129,26 @@ export const SignInView = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <Button
+                    onClick={() => {
+                      authClient.signIn.social({ provider: "google" });
+                    }}
                     disabled={pending}
                     variant="outline"
                     type="button"
                     className="w-full"
                   >
-                    Google
+                    <FaGoogle />
                   </Button>
                   <Button
+                    onClick={() => {
+                      authClient.signIn.social({ provider: "github" });
+                    }}
                     disabled={pending}
                     variant="outline"
                     type="button"
                     className="w-full"
                   >
-                    GitHub
+                    <FaGithub />
                   </Button>
                 </div>
                 <div className="text-center text-sm">
