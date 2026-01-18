@@ -69,10 +69,11 @@ export const agents = pgTable("agents", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 export const meetingStatus = pgEnum("meeting_status", [
-  "scheduled",
-  "in_progress",
+  "upcoming",
+  "active",
   "completed",
-  "canceled",
+  "processing",
+  "cancelled",
 ]);
 export const meetings = pgTable("meetings", {
   id: text("id")
@@ -85,7 +86,7 @@ export const meetings = pgTable("meetings", {
   agentId: text("agent_id")
     .notNull()
     .references(() => agents.id, { onDelete: "cascade" }),
-  status: meetingStatus("status").notNull().default("scheduled"),
+  status: meetingStatus("status").notNull().default("upcoming"),
   startedAt: timestamp("started_at"),
   endedAt: timestamp("ended_at"),
   transcriptUrl: text("transcript_url"),

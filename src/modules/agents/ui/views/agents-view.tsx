@@ -4,7 +4,7 @@ import { ResponsiveDialog } from "@/components/responsive-dialog";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DataTable } from "../Components/data-table";
+import { DataTable } from "@/components/data-table";
 import { columns } from "../Components/columns";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useAgentsFilters } from "../../hooks/use-agents-filters";
