@@ -25,6 +25,7 @@ function formatDuration(seconds: number) {
 }
 
 const statusIconMap = {
+  scheduled: ClockArrowUpIcon,
   completed: CircleCheckIcon,
   cancelled: CircleXIcon,
   upcoming: ClockArrowUpIcon,
@@ -33,6 +34,7 @@ const statusIconMap = {
 } as const;
 
 const statusColorMap = {
+  scheduled: "bg-yellow-500/20 text-yellow-800 border-yellow-800/5",
   upcoming: "bg-yellow-500/20 text-yellow-800 border-yellow-800/5",
   active: "bg-blue-500/20 text-blue-800 border-blue-800/5",
   cancelled: "bg-rose-500/20 text-rose-800 border-rose-800/5",
@@ -88,7 +90,7 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
           variant="outline"
           className={cn(
             "capitalize flex items-center gap-x-1 [&>svg]:size-4",
-            statusColorMap[row.original.status as keyof typeof statusColorMap]
+            statusColorMap[row.original.status as keyof typeof statusColorMap],
           )}
         >
           <Icon className={cn(status === "processing" && "animate-spin")} />
@@ -109,7 +111,7 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
         <ClockFadingIcon className="text-blue-700" />
         {row.original.duration
           ? formatDuration(row.original.duration)
-          : "No duration"}
+          : "No  duration"}
       </Badge>
     ),
   },
