@@ -14,13 +14,17 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration } from "@/lib/utils";
+import { Transcript } from "./transcript";
+import { ChatProvider } from "./chat-provider";
+
 interface Props {
   data: MeetingGetOne;
 }
+
 export const CompletedState = ({ data }: Props) => {
   return (
     <div className="bg-white rounded-lg px-4 py-5 flex flex-col gap-y-8 ">
-      <Tabs defaultValue="Summary">
+      <Tabs defaultValue="summary">
         <div className="bg-white rounded-lg border px-3">
           <ScrollArea>
             <TabsList className="p-0 bg-background justify-start rounded-none h-13">
@@ -35,7 +39,6 @@ export const CompletedState = ({ data }: Props) => {
                 value="transcript"
                 className="text-muted-foreground rounded-none  bg-background data-[state=active]:shadow-none border-b-2 border-transparent data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground h-full hover:text-accent-foreground"
               >
-                {" "}
                 <FileTextIcon /> Transcript
               </TabsTrigger>
               <TabsTrigger
@@ -63,6 +66,16 @@ export const CompletedState = ({ data }: Props) => {
               className="w-full rounded-lg"
               controls
             />
+          </div>
+        </TabsContent>
+        <TabsContent value="chat">
+          <div className="bg-white rounded-lg border px-4 py-5">
+            <ChatProvider meetingId={data.id} meetingName={data.name} />
+          </div>
+        </TabsContent>
+        <TabsContent value="transcript">
+          <div className="bg-white rounded-lg border px-4 py-5">
+            <Transcript meetingId={data.id} />
           </div>
         </TabsContent>
         <TabsContent value="summary">
