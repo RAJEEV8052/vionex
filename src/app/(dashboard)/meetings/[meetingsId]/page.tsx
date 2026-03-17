@@ -29,6 +29,7 @@ const Page = async ({ params }: Props) => {
       id: meetingsId,
     }),
   );
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<MeetingIdViewLoading />}>
