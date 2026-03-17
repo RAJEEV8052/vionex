@@ -2,6 +2,7 @@ import {
   createTRPCRouter,
   baseProcedure,
   protectedProcedure,
+  premiumProcedure,
 } from "@/trpc/init";
 import { z } from "zod";
 import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
@@ -25,8 +26,8 @@ export const agentsRouter = createTRPCRouter({
         .where(
           and(
             eq(agents.id, input.id),
-            eq(agents.userId, ctx.auth.session.user.id)
-          )
+            eq(agents.userId, ctx.auth.session.user.id),
+          ),
         )
         .returning();
       if (!updatedAgent) {
@@ -42,8 +43,8 @@ export const agentsRouter = createTRPCRouter({
         .where(
           and(
             eq(agents.id, input.id),
-            eq(agents.userId, ctx.auth.session.user.id)
-          )
+            eq(agents.userId, ctx.auth.session.user.id),
+          ),
         )
         .returning();
       if (!removedAgent) {
@@ -63,8 +64,8 @@ export const agentsRouter = createTRPCRouter({
         .where(
           and(
             eq(agents.id, input.id),
-            eq(agents.userId, ctx.auth.session.user.id)
-          )
+            eq(agents.userId, ctx.auth.session.user.id),
+          ),
         );
       if (!existingAgent) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
@@ -81,7 +82,7 @@ export const agentsRouter = createTRPCRouter({
           .max(MAX_PAGE_SIZE)
           .default(DEFAULT_PAGE_SIZE),
         search: z.string().nullish(),
-      })
+      }),
     )
 
     .query(async ({ ctx, input }) => {
@@ -95,8 +96,8 @@ export const agentsRouter = createTRPCRouter({
         .where(
           and(
             eq(agents.userId, ctx.auth.session.user.id),
-            search ? ilike(agents.name, `%${search}%`) : undefined
-          )
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
         )
         .orderBy(desc(agents.createdAt), desc(agents.id))
         .limit(pageSize)
@@ -107,8 +108,8 @@ export const agentsRouter = createTRPCRouter({
         .where(
           and(
             eq(agents.userId, ctx.auth.session.user.id),
-            search ? ilike(agents.name, `%${search}%`) : undefined
-          )
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
         );
       const totalPages = Math.ceil(total.count / pageSize);
       return {
@@ -118,7 +119,7 @@ export const agentsRouter = createTRPCRouter({
       };
     }),
 
-  create: protectedProcedure
+  create: premiumProcedure("agent")
     .input(agentsInsertSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgent] = await db

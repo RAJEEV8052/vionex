@@ -28,24 +28,27 @@ export const AgentIdView = ({ agentId }: Props) => {
   const trpc = useTRPC();
   const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
   const { data } = useSuspenseQuery(
-    trpc.agents.getOne.queryOptions({ id: agentId })
+    trpc.agents.getOne.queryOptions({ id: agentId }),
   );
   const removeAgent = useMutation(
     trpc.agents.remove.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries(
-          trpc.agents.getMany.queryOptions({})
+          trpc.agents.getMany.queryOptions({}),
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
         );
         router.push("/agents");
       },
       onError: (error) => {
         toast.error(`Failed to remove agent: ${error.message}`);
       },
-    })
+    }),
   );
   const [RemoveConfirmation, confirmRemove] = useConfirm(
     "Are you sure you want to remove this agent?",
-    `The following action will remove "${data.meetingCount}" associated meetings. This action cannot be undone.`
+    `The following action will remove "${data.meetingCount}" associated meetings. This action cannot be undone.`,
   );
   const handleRemoveAgent = async () => {
     const ok = await confirmRemove();

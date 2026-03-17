@@ -70,7 +70,7 @@ export const DashboardUserButton = () => {
           </DrawerHeader>
           <DrawerFooter className="flex flex-col gap-2">
             <button
-              onClick={() => router.push("/billing")}
+              onClick={() => authClient.customer.portal()}
               className="w-full flex items-center justify-between rounded-lg border border-border/10 p-3 bg-white/5 hover:bg-white/10"
             >
               Billing
@@ -123,7 +123,10 @@ export const DashboardUserButton = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer flex items-center justify-between">
+        <DropdownMenuItem
+          onClick={() => authClient.customer.portal()}
+          className="cursor-pointer flex items-center justify-between"
+        >
           Billing
           <CreditCardIcon className="size-4" />
         </DropdownMenuItem>

@@ -2,6 +2,7 @@ import {
   createTRPCRouter,
   baseProcedure,
   protectedProcedure,
+  premiumProcedure,
 } from "@/trpc/init";
 import { z } from "zod";
 import JSONL from "jsonl-parse-stringify";
@@ -35,7 +36,7 @@ export const meetingsRouter = createTRPCRouter({
   generateChatToken: protectedProcedure.mutation(async ({ ctx }) => {
     const token = streamChat.createToken(ctx.auth.session.user.id);
     await streamChat.upsertUser({
-      id: ctx.auth.session.user.id, 
+      id: ctx.auth.session.user.id,
       role: "admin",
     });
     return token;
@@ -190,7 +191,7 @@ export const meetingsRouter = createTRPCRouter({
       }
       return updatedMeeting;
     }),
-  create: protectedProcedure
+  create: premiumProcedure("meeting")
     .input(meetingsInsertSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdMeeting] = await db
