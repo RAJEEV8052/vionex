@@ -45,31 +45,36 @@ export const MeetingForms = ({
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
   const [agentSearch, setAgentSearch] = useState("");
   const agents = useQuery(
-    trpc.agents.getMany.queryOptions({ pageSize: 100, search: agentSearch })
+    trpc.agents.getMany.queryOptions({ pageSize: 100, search: agentSearch }),
   );
   const createMeeting = useMutation(
     trpc.meetings.create.mutationOptions({
       onSuccess: async (data) => {
         await queryClient.invalidateQueries(
-          trpc.meetings.getMany.queryOptions({})
+          trpc.meetings.getMany.queryOptions({}),
         );
-
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
+        );
         onSuccess?.(data.id);
       },
       onError: (error) => {
         toast.error(`Failed to create meeting: ${error.message}`);
+        if (error.data?.code === "FORBIDDEN") {
+          router.push("/upgrade");
+        }
       },
-    })
+    }),
   );
   const updateMeeting = useMutation(
     trpc.meetings.update.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries(
-          trpc.meetings.getMany.queryOptions({})
+          trpc.meetings.getMany.queryOptions({}),
         );
         if (initialValues?.id) {
           await queryClient.invalidateQueries(
-            trpc.meetings.getOne.queryOptions({ id: initialValues.id })
+            trpc.meetings.getOne.queryOptions({ id: initialValues.id }),
           );
         }
         onSuccess?.();
@@ -77,7 +82,7 @@ export const MeetingForms = ({
       onError: (error) => {
         toast.error(`Failed to create meeting: ${error.message}`);
       },
-    })
+    }),
   );
   const form = useForm<z.infer<typeof meetingsInsertSchema>>({
     resolver: zodResolver(meetingsInsertSchema),
